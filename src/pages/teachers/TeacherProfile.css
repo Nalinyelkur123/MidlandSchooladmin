@@ -1,0 +1,465 @@
+.teacher-profile-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.profile-header-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: #1f2937;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.dark-theme .back-button {
+  color: #e2e8f0;
+}
+
+.back-button:hover {
+  background: #f3f4f6;
+}
+
+.dark-theme .back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.profile-header-section h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.dark-theme .profile-header-section h1 {
+  color: #f1f5f9;
+}
+
+.profile-top-card {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.dark-theme .profile-top-card {
+  background: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.profile-info-main {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.dark-theme .profile-name {
+  color: #f1f5f9;
+}
+
+.profile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.info-badge.purple {
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+}
+
+.dark-theme .info-badge.purple {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+}
+
+.info-badge.orange {
+  background: rgba(249, 115, 22, 0.1);
+  color: #ea580c;
+}
+
+.dark-theme .info-badge.orange {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fb923c;
+}
+
+.contact-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--color-surface-alt);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--color-text-default);
+  min-width: 200px;
+  border: 1px solid var(--color-border);
+}
+
+.dark-theme .contact-card {
+  background: rgba(148, 163, 184, 0.08);
+  color: #cbd5e1;
+  border-color: var(--color-border);
+}
+
+.contact-card svg {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.dark-theme .contact-card svg {
+  color: #94a3b8;
+}
+
+.contact-card-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact-card-link:hover,
+.contact-card-link:focus-visible {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.profile-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.dark-theme .metric-card {
+  background: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 80px;
+  height: 80px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.metric-icon {
+  position: relative;
+  z-index: 1;
+  color: #ef4444;
+  margin-bottom: 12px;
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.dark-theme .metric-label {
+  color: #94a3b8;
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  position: relative;
+  z-index: 1;
+}
+
+.dark-theme .metric-value {
+  color: #f1f5f9;
+}
+
+.profile-content-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.profile-tabs-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .profile-tabs-section {
+  background: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.profile-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.dark-theme .profile-tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-tab {
+  padding: 12px 18px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-tab svg {
+  flex-shrink: 0;
+}
+
+.profile-tab:hover {
+  color: var(--color-primary);
+}
+
+.dark-theme .profile-tab {
+  color: #94a3b8;
+}
+
+.profile-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.dark-theme .profile-tab.active {
+  color: #fca5a5;
+  border-bottom-color: #fca5a5;
+}
+
+.tab-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 768px) {
+  .tab-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-field-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field-display label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dark-theme .form-field-display label {
+  color: #94a3b8;
+}
+
+.field-value {
+  font-size: 16px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.dark-theme .field-value {
+  color: #e2e8f0;
+}
+
+.attendance-summary-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+.dark-theme .attendance-summary-card {
+  background: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.attendance-summary-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.dark-theme .attendance-summary-card h3 {
+  color: #f1f5f9;
+}
+
+.teacher-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.summary-list span {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+}
+
+.summary-list strong {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.dark-theme .summary-list span {
+  color: #94a3b8;
+}
+
+.dark-theme .summary-list strong {
+  color: #f1f5f9;
+}
+
+
+@media (max-width: 1024px) {
+  .profile-content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-top-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-badges {
+    justify-content: center;
+  }
+
+  .contact-cards {
+    justify-content: center;
+  }
+
+  .profile-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

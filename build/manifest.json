@@ -1,0 +1,21 @@
+{
+  "short_name": "Midland Admin",
+  "name": "Midland International School - Administration Portal",
+  "icons": [
+    {
+      "src": "Images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#cc0000",
+  "background_color": "#ffffff",
+  "orientation": "any"
+}

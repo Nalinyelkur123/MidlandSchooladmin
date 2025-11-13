@@ -1,0 +1,83 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.status-badge-green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.dark-theme .status-badge-green {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.status-badge-red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.dark-theme .status-badge-red {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.status-badge-yellow {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.dark-theme .status-badge-yellow {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.status-badge-gray {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.dark-theme .status-badge-gray {
+  background: rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+}
+
+.status-badge-blue {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.dark-theme .status-badge-blue {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.status-badge-outlined {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+.status-badge-dot {
+  position: relative;
+  padding-left: 20px;
+}
+
+.status-badge-dot::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
