@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { publicAsset } from '../config';
 import { 
   FiHome, FiUsers, FiUserCheck, FiUser, FiCalendar, FiBook, 
-  FiMenu, FiSearch, FiSun, FiMoon, FiGrid, FiArrowRight
+  FiMenu, FiSearch, FiSun, FiMoon, FiGrid, FiArrowRight, FiLayers
 } from 'react-icons/fi';
 
 export default function DashboardLayout({ children }) {
@@ -45,6 +45,7 @@ export default function DashboardLayout({ children }) {
     { path: '/students', label: 'Students', icon: FiUsers },
     { path: '/teachers', label: 'Teachers', icon: FiUserCheck },
     { path: '/admin', label: 'Admins', icon: FiUser },
+    { path: '/schools', label: 'Schools', icon: FiLayers },
     { path: '/subjects', label: 'Subjects', icon: FiBook },
     { path: '/timetable', label: 'Timetable', icon: FiCalendar },
   ];

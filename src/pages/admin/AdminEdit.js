@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { FiArrowLeft } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiMail } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
 
 export default function AdminEdit() {
@@ -19,28 +19,115 @@ export default function AdminEdit() {
   useEffect(() => {
     let isMounted = true;
     async function fetchAdmin() {
+      if (!token) {
+        if (isMounted) {
+          setError('Authentication required');
+          setLoading(false);
+        }
+        return;
+      }
+
       setLoading(true);
       setError('');
       try {
-        const url = getApiUrl('/midland/admin/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
+        // Decode the ID from URL
+        const decodedId = decodeURIComponent(id || '');
         
-        if (!res.ok) {
-          throw new Error('Failed to load admin');
+        // Validate ID - don't make API calls with invalid IDs
+        if (!decodedId || decodedId === '-' || decodedId.trim() === '') {
+          if (isMounted) {
+            setError('Invalid administrator identifier');
+            setLoading(false);
+            toast.error('Invalid administrator identifier');
+          }
+          return;
         }
         
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : [];
-        const match = list.find(a => 
-          String(a.schoolEmail) === id || 
-          String(a.personalEmail) === id
-        );
+        let adminData = null;
+        
+        // Check if ID looks like an email address
+        const isEmail = decodedId.includes('@');
+        
+        // Try to fetch by email endpoint first (if ID is an email)
+        if (isEmail) {
+          try {
+            const emailUrl = getApiUrl(`/midland/admin/email/${encodeURIComponent(decodedId)}`);
+            const emailRes = await fetch(emailUrl, {
+              method: 'GET',
+              headers: getAuthHeaders(token)
+            });
+            if (emailRes.ok) {
+              adminData = await emailRes.json();
+            }
+          } catch (err) {
+            // Fall through to other methods
+          }
+        }
+        
+        // Try to fetch by specific endpoint (if not already found)
+        if (!adminData) {
+          try {
+            const specificUrl = getApiUrl(`/midland/admin/${encodeURIComponent(decodedId)}`);
+            const specificRes = await fetch(specificUrl, {
+              method: 'GET',
+              headers: getAuthHeaders(token)
+            });
+            if (specificRes.ok) {
+              adminData = await specificRes.json();
+            }
+          } catch (err) {
+            // Fall through to list endpoint
+          }
+        }
+        
+        // If not found, fetch all and search
+        if (!adminData) {
+          const url = getApiUrl('/midland/admin/all');
+          const res = await fetch(url, { 
+            headers: getAuthHeaders(token)
+          });
+          
+          if (!res.ok) {
+            throw new Error('Failed to load admin');
+          }
+          
+          const data = await res.json();
+          const list = Array.isArray(data) ? data : [];
+          
+          // Try multiple matching strategies
+          const match = list.find(a => {
+            if (!a) return false;
+            
+            const email = String(a.email || '').trim();
+            const schoolEmail = String(a.schoolEmail || '').trim();
+            const personalEmail = String(a.personalEmail || '').trim();
+            const adminCode = String(a.adminCode || '').trim();
+            const adminId = String(a.id || '').trim();
+            const decodedIdLower = decodedId.toLowerCase().trim();
+            
+            // Try exact matches first (case-insensitive)
+            if (email && email.toLowerCase() === decodedIdLower) return true;
+            if (schoolEmail && schoolEmail.toLowerCase() === decodedIdLower) return true;
+            if (personalEmail && personalEmail.toLowerCase() === decodedIdLower) return true;
+            if (adminCode && adminCode.toLowerCase() === decodedIdLower) return true;
+            if (adminId && adminId.toLowerCase() === decodedIdLower) return true;
+            
+            // Try case-sensitive matches
+            if (email && email === decodedId) return true;
+            if (schoolEmail && schoolEmail === decodedId) return true;
+            if (personalEmail && personalEmail === decodedId) return true;
+            if (adminCode && adminCode === decodedId) return true;
+            if (adminId && adminId === decodedId) return true;
+            
+            return false;
+          });
+          
+          adminData = match || null;
+        }
         
         if (isMounted) {
-          if (match) {
-            setForm(match);
+          if (adminData) {
+            setForm(adminData);
           } else {
             setError('Admin not found');
             toast.error('Admin not found');
@@ -59,9 +146,12 @@ export default function AdminEdit() {
   }, [id, token, toast]);
 
   if (loading) return <div className="page"><SkeletonForm /></div>;
-  if (error && !form.schoolEmail) return <div className="page"><div className="alert alert-error">{error}</div></div>;
+  if (error && !form.email && !form.schoolEmail && !form.personalEmail) {
+    return <div className="page"><div className="alert alert-error">{error}</div></div>;
+  }
 
-  const emailKey = form.schoolEmail || form.personalEmail || id;
+  // Use the email ID from URL parameter for the API endpoint
+  const emailId = decodeURIComponent(id || '');
 
   return (
     <div className="page">
@@ -79,10 +169,19 @@ export default function AdminEdit() {
         onSubmit={async (e) => {
           e.preventDefault();
           setError('');
+          
+          // Check if token exists before submitting
+          if (!token) {
+            setError('Authentication required. Please log in again.');
+            toast.error('Authentication required. Please log in again.');
+            return;
+          }
+          
           setSubmitting(true);
           try {
             const payload = { ...form };
-            const url = getApiUrl(`/midland/admin/update/${encodeURIComponent(emailKey)}`);
+            // Use email ID from URL parameter (last part of endpoint)
+            const url = getApiUrl(`/midland/admin/update/${encodeURIComponent(emailId)}`);
             const res = await fetch(url, {
               method: 'PUT',
               headers: getAuthHeaders(token),
@@ -106,7 +205,10 @@ export default function AdminEdit() {
         }}
       >
         <div className="form-section">
-          <h3>Account</h3>
+          <h3>
+            <FiUser />
+            Account
+          </h3>
           <div className="form-grid">
             <label>
               Username *
@@ -120,7 +222,10 @@ export default function AdminEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Personal Info</h3>
+          <h3>
+            <FiUser />
+            Personal Info
+          </h3>
           <div className="form-grid">
             <label>
               Full Name *
@@ -147,7 +252,10 @@ export default function AdminEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Contact Details</h3>
+          <h3>
+            <FiMail />
+            Contact Details
+          </h3>
           <div className="form-grid">
             <label>
               Phone Number

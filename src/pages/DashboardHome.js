@@ -1,15 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { FiHome, FiUser, FiUserCheck, FiUsers, FiTrendingUp, FiTrendingDown, FiCalendar, FiBook, FiActivity, FiAward, FiClock } from 'react-icons/fi';
+import { FiHome, FiUser, FiUserCheck, FiUsers, FiTrendingUp, FiTrendingDown, FiCalendar, FiBook, FiActivity, FiAward, FiClock, FiLayers } from 'react-icons/fi';
 import { getApiUrl, getAuthHeaders } from '../config';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
 import { SkeletonCard } from '../components/SkeletonLoader';
 import { useNavigate } from 'react-router-dom';
 import './DashboardHome.css';
 
 export default function DashboardHome() {
   const { token } = useAuth();
-  const toast = useToast();
   const navigate = useNavigate();
   const [counts, setCounts] = useState({
     students: 0,
@@ -64,18 +62,32 @@ export default function DashboardHome() {
         adminsCount = 12;
       }
 
+      let schoolsCount = 0;
+      try {
+        const url = getApiUrl('/midland/admin/schools/all');
+        const res = await fetch(url, {
+          headers: getAuthHeaders(token)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          schoolsCount = Array.isArray(data) ? data.length : 0;
+        }
+      } catch (err) {
+        schoolsCount = 0;
+      }
+
       setCounts({
         students: studentsCount || 1250,
         teachers: teachersCount || 85,
         admins: adminsCount || 12,
-        schools: 6000,
+        schools: schoolsCount || 0,
       });
     } catch (err) {
       setCounts({
         students: 1250,
         teachers: 85,
         admins: 12,
-        schools: 6000,
+        schools: 0,
       });
     } finally {
       setLoading(false);
@@ -93,7 +105,7 @@ export default function DashboardHome() {
       icon: FiHome, 
       color: '#ef4444',
       bgGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-      link: '/',
+      link: '/schools',
       trend: { value: '+12%', direction: 'up', caption: 'vs last month' },
       subtitle: 'Active institutions'
     },
@@ -172,9 +184,9 @@ export default function DashboardHome() {
     { icon: FiUsers, label: 'Add Student', action: () => navigate('/students/create'), color: '#ef4444', description: 'Create a new student profile' },
     { icon: FiUserCheck, label: 'Add Teacher', action: () => navigate('/teachers/create'), color: '#3b82f6', description: 'Onboard teaching staff' },
     { icon: FiUser, label: 'Add Admin', action: () => navigate('/admin/create'), color: '#10b981', description: 'Grant administrative access' },
+    { icon: FiLayers, label: 'Add School', action: () => navigate('/schools/create'), color: '#ef4444', description: 'Register a new school' },
     { icon: FiBook, label: 'View Subjects', action: () => navigate('/subjects'), color: '#f59e0b', description: 'Manage curriculum' },
     { icon: FiCalendar, label: 'Timetable', action: () => navigate('/timetable'), color: '#8b5cf6', description: 'Review daily schedule' },
-    { icon: FiActivity, label: 'Reports', action: () => toast.info('Analytics dashboard coming soon'), color: '#ec4899', description: 'Analyze performance data' },
   ];
 
   const recentActivity = [

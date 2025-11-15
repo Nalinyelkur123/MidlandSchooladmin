@@ -18,6 +18,10 @@ import Admins from './pages/admin/Admins';
 import AdminCreate from './pages/admin/AdminCreate';
 import AdminEdit from './pages/admin/AdminEdit';
 import AdminProfile from './pages/admin/AdminProfile';
+import Schools from './pages/schools/Schools';
+import SchoolCreate from './pages/schools/SchoolCreate';
+import SchoolEdit from './pages/schools/SchoolEdit';
+import SchoolProfile from './pages/schools/SchoolProfile';
 import Timetable from './pages/Timetable';
 import Subjects from './pages/Subjects';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -51,6 +55,10 @@ function App() {
                     <Route path="/admin/create" element={<AdminCreate />} />
                     <Route path="/admin/:id" element={<AdminProfile />} />
                     <Route path="/admin/:id/edit" element={<AdminEdit />} />
+                    <Route path="/schools" element={<Schools />} />
+                    <Route path="/schools/create" element={<SchoolCreate />} />
+                    <Route path="/schools/:id" element={<SchoolProfile />} />
+                    <Route path="/schools/:id/edit" element={<SchoolEdit />} />
                     <Route path="/timetable" element={<Timetable />} />
                     <Route path="/subjects" element={<Subjects />} />
                     <Route path="*" element={<Navigate to="/" replace />} />

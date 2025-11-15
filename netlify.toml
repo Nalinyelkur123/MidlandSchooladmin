@@ -3,9 +3,8 @@
   command = "npm run build"
   functions = "netlify/functions"
 
-# Proxy API requests through Netlify Function to bypass SSL issues
+# Proxy API requests through Netlify Function to bypass SSL issues and mixed content
 # IMPORTANT: This must come BEFORE the SPA redirect
-# Pass the full path including /api prefix
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/proxy"

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { FiArrowLeft } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiBook, FiMail, FiUsers } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
 
 export default function StudentEdit() {
@@ -108,7 +108,10 @@ export default function StudentEdit() {
         }}
       >
         <div className="form-section">
-          <h3>Account</h3>
+          <h3>
+            <FiUser />
+            Account
+          </h3>
           <div className="form-grid">
             <label>
               Username *
@@ -122,7 +125,10 @@ export default function StudentEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Personal Info</h3>
+          <h3>
+            <FiUser />
+            Personal Info
+          </h3>
           <div className="form-grid">
             <label>
               Full Name *
@@ -157,7 +163,10 @@ export default function StudentEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Academic Info</h3>
+          <h3>
+            <FiBook />
+            Academic Info
+          </h3>
           <div className="form-grid">
             <label>
               School Code *
@@ -198,7 +207,10 @@ export default function StudentEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Contact Details</h3>
+          <h3>
+            <FiMail />
+            Contact Details
+          </h3>
           <div className="form-grid">
             <label>
               Phone Number
@@ -216,7 +228,10 @@ export default function StudentEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Guardian Info</h3>
+          <h3>
+            <FiUsers />
+            Guardian Info
+          </h3>
           <div className="form-grid">
             <label>
               Guardian Name

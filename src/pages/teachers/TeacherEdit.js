@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { FiArrowLeft } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiBriefcase, FiMail } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
 
 export default function TeacherEdit() {
@@ -107,7 +107,10 @@ export default function TeacherEdit() {
         }}
       >
         <div className="form-section">
-          <h3>Account</h3>
+          <h3>
+            <FiUser />
+            Account
+          </h3>
           <div className="form-grid">
             <label>
               Username *
@@ -121,7 +124,10 @@ export default function TeacherEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Personal Info</h3>
+          <h3>
+            <FiUser />
+            Personal Info
+          </h3>
           <div className="form-grid">
             <label>
               Full Name *
@@ -144,7 +150,10 @@ export default function TeacherEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Professional Info</h3>
+          <h3>
+            <FiBriefcase />
+            Professional Info
+          </h3>
           <div className="form-grid">
             <label>
               Department *
@@ -166,7 +175,10 @@ export default function TeacherEdit() {
         </div>
 
         <div className="form-section">
-          <h3>Contact Details</h3>
+          <h3>
+            <FiMail />
+            Contact Details
+          </h3>
           <div className="form-grid">
             <label>
               Phone Number

@@ -6,10 +6,19 @@ export function getApiUrl(path) {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   const isProduction = process.env.NODE_ENV === 'production';
   
-  // In production (Netlify), use proxy to avoid SSL certificate issues
-  // The proxy function uses HTTP to connect to backend (no SSL check)
+  // Check if custom API URL is set via environment variable (for Netlify)
+  // This allows setting REACT_APP_API_BASE_URL in Netlify dashboard
+  const customApiUrl = process.env.REACT_APP_API_BASE_URL;
+  
+  if (customApiUrl) {
+    // Use custom API URL if provided (allows HTTPS if backend supports it)
+    return `${customApiUrl}${cleanPath}`;
+  }
+  
+  // In production (Netlify), try to use proxy first
+  // If proxy function is not deployed, this will fail
   if (isProduction) {
-    // Use Netlify function proxy (bypasses SSL cert issues)
+    // Use Netlify function proxy (bypasses SSL cert issues and mixed content)
     // Proxy is configured in netlify.toml to route /api/* to the function
     // The proxy function will make HTTP request to backend
     return `/api${cleanPath}`;
@@ -17,7 +26,7 @@ export function getApiUrl(path) {
   
   // In development, always use HTTP directly (works perfectly locally)
   // DO NOT CHANGE THIS - local development works with HTTP
-  const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://4.198.16.72.nip.io';
+  const baseUrl = 'http://4.198.16.72.nip.io';
   return `${baseUrl}${cleanPath}`;
 }
 

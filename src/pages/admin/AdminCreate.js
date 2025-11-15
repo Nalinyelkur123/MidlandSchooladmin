@@ -130,6 +130,13 @@ export default function AdminCreate() {
           setError('');
           setFieldErrors({});
           
+          // Check if token exists before submitting
+          if (!token) {
+            setError('Authentication required. Please log in again.');
+            toast.error('Authentication required. Please log in again.');
+            return;
+          }
+          
           // Validate form before submission
           if (!validateForm()) {
             toast.error('Please fix the errors in the form');
