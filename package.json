@@ -36,5 +36,5 @@
   "devDependencies": {
     "react-scripts": "4.0.3"
   },
-  "proxy": "http://4.198.16.72.nip.io"
+  
 }

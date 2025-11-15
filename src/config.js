@@ -4,29 +4,17 @@
 // Helper function to get API URL
 export function getApiUrl(path) {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  const isProduction = process.env.NODE_ENV === 'production';
-  
-  // Check if custom API URL is set via environment variable (for Netlify)
-  // This allows setting REACT_APP_API_BASE_URL in Netlify dashboard
+
+  // If a custom API URL is provided via env, use that (supports HTTPS)
   const customApiUrl = process.env.REACT_APP_API_BASE_URL;
-  
   if (customApiUrl) {
-    // Use custom API URL if provided (allows HTTPS if backend supports it)
     return `${customApiUrl}${cleanPath}`;
   }
-  
-  // In production (Netlify), try to use proxy first
-  // If proxy function is not deployed, this will fail
-  if (isProduction) {
-    // Use Netlify function proxy (bypasses SSL cert issues and mixed content)
-    // Proxy is configured in netlify.toml to route /api/* to the function
-    // The proxy function will make HTTP request to backend
-    return `/api${cleanPath}`;
-  }
-  
-  // In development, always use HTTP directly (works perfectly locally)
-  // DO NOT CHANGE THIS - local development works with HTTP
-  const baseUrl = 'http://4.198.16.72.nip.io';
+
+  // Otherwise use an explicit base URL. In production prefer HTTPS.
+  const isProduction = process.env.NODE_ENV === 'production';
+  const defaultHost = '4.198.16.72.nip.io';
+  const baseUrl = isProduction ? `https://${defaultHost}` : `http://${defaultHost}`;
   return `${baseUrl}${cleanPath}`;
 }
 
