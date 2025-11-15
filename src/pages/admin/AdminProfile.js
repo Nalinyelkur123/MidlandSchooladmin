@@ -134,16 +134,6 @@ export default function AdminProfile() {
           });
           
           adminData = match || null;
-          
-          // Debug logging (remove in production if needed)
-          if (!adminData && list.length > 0) {
-            console.log('AdminProfile: Could not find admin with ID:', decodedId);
-            console.log('AdminProfile: Available admins:', list.map(a => ({
-              schoolEmail: a.schoolEmail,
-              personalEmail: a.personalEmail,
-              adminCode: a.adminCode
-            })));
-          }
         }
 
         if (isMounted) {

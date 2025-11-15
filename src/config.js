@@ -18,11 +18,6 @@ export function getApiUrl(path) {
   return `${baseUrl}${cleanPath}`;
 }
 
-// Returns array with direct URL (for backward compatibility)
-export function getApiUrls(path) {
-  return [getApiUrl(path)];
-}
-
 // Helper function to get headers with required Bearer token
 export function getAuthHeaders(token) {
   if (!token) {
