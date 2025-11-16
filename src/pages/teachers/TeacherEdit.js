@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { FiArrowLeft, FiUser, FiBriefcase, FiMail } from 'react-icons/fi';
+import { useSearch } from '../../context/SearchContext';
+import { FiArrowLeft, FiUser, FiBriefcase, FiMail, FiSearch } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
 
 export default function TeacherEdit() {
@@ -11,10 +12,13 @@ export default function TeacherEdit() {
   const { id } = useParams();
   const { token } = useAuth();
   const toast = useToast();
+  const { searchQuery, setSearchQuery } = useSearch();
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [schools, setSchools] = useState([]);
+  const [loadingSchools, setLoadingSchools] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -59,6 +63,43 @@ export default function TeacherEdit() {
     return () => { isMounted = false; };
   }, [id, token, toast]);
 
+  // Fetch schools for dropdown
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchSchools() {
+      setLoadingSchools(true);
+      try {
+        const url = getApiUrl('/midland/admin/schools/all');
+        const res = await fetch(url, { 
+          headers: getAuthHeaders(token)
+        });
+        
+        if (!res.ok) {
+          throw new Error('Failed to load schools');
+        }
+        
+        const data = await res.json();
+        const schoolsData = Array.isArray(data) ? data : [];
+        
+        if (isMounted) {
+          setSchools(schoolsData);
+        }
+      } catch (err) {
+        if (isMounted) {
+          toast.error('Failed to load schools. You can still enter school code manually.');
+        }
+      } finally {
+        if (isMounted) setLoadingSchools(false);
+      }
+    }
+    
+    if (token) {
+      fetchSchools();
+    }
+    
+    return () => { isMounted = false; };
+  }, [token, toast]);
+
   if (loading) return <div className="page"><SkeletonForm /></div>;
   if (error && !form.schoolEmail) return <div className="page"><div className="alert alert-error">{error}</div></div>;
 
@@ -67,7 +108,27 @@ export default function TeacherEdit() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Edit Teacher</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+          <h2>Edit Teacher</h2>
+          <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
+            <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 40px',
+                border: '1px solid var(--color-border-strong)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text-default)',
+              }}
+            />
+          </div>
+        </div>
         <button className="btn-secondary" onClick={() => navigate('/teachers')}>
           <FiArrowLeft size={16} style={{ marginRight: 8 }} />
           Back to List
@@ -168,8 +229,46 @@ export default function TeacherEdit() {
               <input value={form.teacherCode || ''} onChange={(e) => setForm({ ...form, teacherCode: e.target.value })} required />
             </label>
             <label>
+              Experience (Years)
+              <input 
+                type="number"
+                min="0"
+                value={form.experience || ''} 
+                onChange={(e) => setForm({ ...form, experience: e.target.value })} 
+                placeholder="e.g., 5"
+              />
+            </label>
+            <label>
               School Code *
-              <input value={form.schoolCode || ''} onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} required />
+              {loadingSchools ? (
+                <input 
+                  value={form.schoolCode || ''} 
+                  onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} 
+                  placeholder="Loading schools..."
+                  disabled
+                  required 
+                />
+              ) : schools.length > 0 ? (
+                <select 
+                  value={form.schoolCode || ''} 
+                  onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} 
+                  required 
+                >
+                  <option value="">Select School Code</option>
+                  {schools.map(school => (
+                    <option key={school.schoolCode || school.id} value={school.schoolCode || school.id}>
+                      {school.schoolCode || school.id} {school.schoolName ? `- ${school.schoolName}` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input 
+                  value={form.schoolCode || ''} 
+                  onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} 
+                  placeholder="Enter school code"
+                  required 
+                />
+              )}
             </label>
           </div>
         </div>

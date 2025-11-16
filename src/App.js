@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, RequireAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
+import { SearchProvider } from './context/SearchContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardHome from './pages/DashboardHome';
@@ -33,6 +34,7 @@ function App() {
       <ToastProvider>
     <AuthProvider>
       <Router>
+        <SearchProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -68,6 +70,7 @@ function App() {
             }
           />
         </Routes>
+        </SearchProvider>
       </Router>
     </AuthProvider>
       </ToastProvider>

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getApiUrl, getAuthHeaders } from '../config';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { FiCalendar } from 'react-icons/fi';
 import { SkeletonTable } from '../components/SkeletonLoader';
 import EmptyState from '../components/EmptyState';
 
@@ -14,7 +15,18 @@ export default function Timetable() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const hasFetchedRef = React.useRef(false);
+  const isEmptyRef = React.useRef(false);
+  const lastTeacherCodeRef = React.useRef('');
+
   const fetchTimetable = useCallback(async () => {
+    // Don't refetch if teacher code hasn't changed and we already fetched empty data
+    if (hasFetchedRef.current && lastTeacherCodeRef.current === teacherCode && isEmptyRef.current) {
+      return;
+    }
+
+    hasFetchedRef.current = true;
+    lastTeacherCodeRef.current = teacherCode;
     setLoading(true);
     setError('');
     try {
@@ -23,23 +35,37 @@ export default function Timetable() {
       const res = await fetch(url, { 
         headers: getAuthHeaders(token)
       });
+      
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
+      
       const data = await res.json();
-      setEntries(Array.isArray(data) ? data : []);
+      const entriesData = Array.isArray(data) ? data : [];
+      
+      // Only treat as empty data if we got a successful 200 OK response with empty array
+      setEntries(entriesData);
+      setError(''); // Clear any previous errors
+      isEmptyRef.current = entriesData.length === 0;
     } catch (err) {
       const errorMsg = err.message || 'Failed to load timetable';
       setError(errorMsg);
       toast.error(errorMsg);
+      setEntries([]);
+      isEmptyRef.current = true;
     } finally {
       setLoading(false);
     }
   }, [teacherCode, token, toast]);
 
   useEffect(() => {
+    // Reset fetch flags when teacher code or token changes
+    if (lastTeacherCodeRef.current !== teacherCode) {
+      hasFetchedRef.current = false;
+      isEmptyRef.current = false;
+    }
     fetchTimetable();
-  }, [fetchTimetable]);
+  }, [fetchTimetable, teacherCode, token]);
 
   const days = useMemo(() => Array.from(new Set(entries.map(e => e.dayOfWeek))), [entries]);
   const filtered = useMemo(() => {
@@ -57,8 +83,6 @@ export default function Timetable() {
           <div className="meta">{loading ? 'Loading…' : `${filtered.length} periods`}</div>
         </div>
       </div>
-
-      {error && <div className="alert alert-error">{error}</div>}
 
       <div className="filters">
         <input 
@@ -80,6 +104,21 @@ export default function Timetable() {
 
       {loading ? (
         <SkeletonTable rows={5} columns={7} />
+      ) : error ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <FiCalendar size={64} />
+          </div>
+          <h3 className="empty-state-title">Error Loading Timetable</h3>
+          <p className="empty-state-message">{error}</p>
+          <button className="empty-state-action btn-secondary" onClick={() => {
+            hasFetchedRef.current = false;
+            isEmptyRef.current = false;
+            fetchTimetable();
+          }}>
+            Try Again
+          </button>
+        </div>
       ) : filtered.length === 0 ? (
         <EmptyState type="timetable" />
       ) : (

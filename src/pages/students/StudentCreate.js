@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useSearch } from '../../context/SearchContext';
+import { FiSearch } from 'react-icons/fi';
 import { FiArrowLeft, FiUser, FiBook, FiMail, FiUsers, FiHome } from 'react-icons/fi';
+import ImageUpload from '../../components/ImageUpload';
+import '../../components/ImageUpload.css';
 import {
   validateUsername,
   validatePassword,
@@ -21,6 +25,8 @@ export default function StudentCreate() {
   const navigate = useNavigate();
   const { token } = useAuth();
   const toast = useToast();
+  const [schools, setSchools] = useState([]);
+  const [loadingSchools, setLoadingSchools] = useState(false);
   const [form, setForm] = useState({
     username: '',
     password: '',
@@ -55,6 +61,44 @@ export default function StudentCreate() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+  const { searchQuery, setSearchQuery } = useSearch();
+
+  // Fetch schools for dropdown
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchSchools() {
+      setLoadingSchools(true);
+      try {
+        const url = getApiUrl('/midland/admin/schools/all');
+        const res = await fetch(url, { 
+          headers: getAuthHeaders(token)
+        });
+        
+        if (!res.ok) {
+          throw new Error('Failed to load schools');
+        }
+        
+        const data = await res.json();
+        const schoolsData = Array.isArray(data) ? data : [];
+        
+        if (isMounted) {
+          setSchools(schoolsData);
+        }
+      } catch (err) {
+        if (isMounted) {
+          toast.error('Failed to load schools. You can still enter school code manually.');
+        }
+      } finally {
+        if (isMounted) setLoadingSchools(false);
+      }
+    }
+    
+    if (token) {
+      fetchSchools();
+    }
+    
+    return () => { isMounted = false; };
+  }, [token, toast]);
 
   const handleFieldChange = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -283,7 +327,27 @@ export default function StudentCreate() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Create New Student</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+          <h2>Create New Student</h2>
+          <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
+            <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 40px',
+                border: '1px solid var(--color-border-strong)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text-default)',
+              }}
+            />
+          </div>
+        </div>
         <button className="btn-secondary" onClick={() => navigate('/students')}>
           <FiArrowLeft size={16} style={{ marginRight: 8 }} />
           Back to List
@@ -302,6 +366,49 @@ export default function StudentCreate() {
           if (!validateForm()) {
             toast.error('Please fix the errors in the form');
             return;
+          }
+          
+          // Check for duplicates
+          try {
+            const checkUrl = getApiUrl('/midland/admin/students/all');
+            const checkRes = await fetch(checkUrl, {
+              headers: getAuthHeaders(token)
+            });
+            
+            if (checkRes.ok) {
+              const existingStudents = await checkRes.json();
+              const studentsArray = Array.isArray(existingStudents) ? existingStudents : [];
+              
+              // Check for duplicate admission number
+              if (form.admissionNumber && studentsArray.some(s => 
+                (s.admissionNumber || '').trim().toLowerCase() === form.admissionNumber.trim().toLowerCase()
+              )) {
+                setFieldErrors({ admissionNumber: 'A student with this admission number already exists' });
+                toast.error('A student with this admission number already exists');
+                return;
+              }
+              
+              // Check for duplicate roll number
+              if (form.rollNo && studentsArray.some(s => 
+                (s.rollNo || '').trim().toLowerCase() === form.rollNo.trim().toLowerCase()
+              )) {
+                setFieldErrors({ rollNo: 'A student with this roll number already exists' });
+                toast.error('A student with this roll number already exists');
+                return;
+              }
+              
+              // Check for duplicate school email
+              if (form.schoolEmail && studentsArray.some(s => 
+                ((s.schoolEmail || '').trim().toLowerCase() === form.schoolEmail.trim().toLowerCase())
+              )) {
+                setFieldErrors({ schoolEmail: 'A student with this school email already exists' });
+                toast.error('A student with this school email already exists');
+                return;
+              }
+            }
+          } catch (checkErr) {
+            // If duplicate check fails, continue with submission (backend will catch duplicates)
+            console.warn('Could not check for duplicates:', checkErr);
           }
           
           setSubmitting(true);
@@ -525,17 +632,19 @@ export default function StudentCreate() {
               />
               {fieldErrors.motherTongue && <span className="field-error">{fieldErrors.motherTongue}</span>}
             </label>
-            <label>
-              Profile Image URL
-              <input 
-                type="url"
-                value={form.profileImage} 
-                onChange={(e) => handleFieldChange('profileImage', e.target.value)} 
-                className={fieldErrors.profileImage ? 'input-error' : ''}
-                placeholder="https://example.com/image.png"
-              />
-              {fieldErrors.profileImage && <span className="field-error">{fieldErrors.profileImage}</span>}
-            </label>
+          </div>
+          <div style={{ gridColumn: '1 / -1', marginTop: '16px' }}>
+            <ImageUpload
+              value={form.profileImage || ''}
+              onChange={(value) => handleFieldChange('profileImage', value)}
+              onError={(error) => {
+                setFieldErrors({ ...fieldErrors, profileImage: error });
+                toast.error(error);
+              }}
+              label="Profile Image"
+              description="Drag and drop an image here, or click to select"
+            />
+            {fieldErrors.profileImage && <span className="field-error" style={{ marginTop: '8px', display: 'block' }}>{fieldErrors.profileImage}</span>}
           </div>
         </div>
 
@@ -547,12 +656,38 @@ export default function StudentCreate() {
           <div className="form-grid">
             <label>
               School Code *
-              <input 
-                value={form.schoolCode} 
-                onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
-                className={fieldErrors.schoolCode ? 'input-error' : ''}
-                required 
-              />
+              {loadingSchools ? (
+                <input 
+                  value={form.schoolCode} 
+                  onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
+                  className={fieldErrors.schoolCode ? 'input-error' : ''}
+                  placeholder="Loading schools..."
+                  disabled
+                  required 
+                />
+              ) : schools.length > 0 ? (
+                <select 
+                  value={form.schoolCode} 
+                  onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
+                  className={fieldErrors.schoolCode ? 'input-error' : ''}
+                  required 
+                >
+                  <option value="">Select School Code</option>
+                  {schools.map(school => (
+                    <option key={school.schoolCode || school.id} value={school.schoolCode || school.id}>
+                      {school.schoolCode || school.id} {school.schoolName ? `- ${school.schoolName}` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input 
+                  value={form.schoolCode} 
+                  onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
+                  className={fieldErrors.schoolCode ? 'input-error' : ''}
+                  placeholder="Enter school code"
+                  required 
+                />
+              )}
               {fieldErrors.schoolCode && <span className="field-error">{fieldErrors.schoolCode}</span>}
             </label>
             <label>

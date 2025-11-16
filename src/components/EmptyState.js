@@ -6,6 +6,7 @@ const iconMap = {
   students: FiUsers,
   teachers: FiUsers,
   admins: FiUsers,
+  schools: FiUsers,
   subjects: FiBook,
   timetable: FiCalendar,
   default: FiInbox,
@@ -33,6 +34,10 @@ export default function EmptyState({
     admins: {
       title: 'No Administrators Found',
       message: 'Add administrators to manage the school system.',
+    },
+    schools: {
+      title: 'No Schools Found',
+      message: 'Get started by adding your first school to the system.',
     },
     subjects: {
       title: 'No Subjects Found',

@@ -3,18 +3,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { FiArrowLeft, FiUser, FiBook, FiMail, FiUsers } from 'react-icons/fi';
+import { useSearch } from '../../context/SearchContext';
+import { FiArrowLeft, FiUser, FiBook, FiMail, FiUsers, FiSearch } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
+import ImageUpload from '../../components/ImageUpload';
+import '../../components/ImageUpload.css';
 
 export default function StudentEdit() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { token } = useAuth();
   const toast = useToast();
+  const { searchQuery, setSearchQuery } = useSearch();
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [schools, setSchools] = useState([]);
+  const [loadingSchools, setLoadingSchools] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -60,6 +66,43 @@ export default function StudentEdit() {
     return () => { isMounted = false; };
   }, [id, token, toast]);
 
+  // Fetch schools for dropdown
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchSchools() {
+      setLoadingSchools(true);
+      try {
+        const url = getApiUrl('/midland/admin/schools/all');
+        const res = await fetch(url, { 
+          headers: getAuthHeaders(token)
+        });
+        
+        if (!res.ok) {
+          throw new Error('Failed to load schools');
+        }
+        
+        const data = await res.json();
+        const schoolsData = Array.isArray(data) ? data : [];
+        
+        if (isMounted) {
+          setSchools(schoolsData);
+        }
+      } catch (err) {
+        if (isMounted) {
+          toast.error('Failed to load schools. You can still enter school code manually.');
+        }
+      } finally {
+        if (isMounted) setLoadingSchools(false);
+      }
+    }
+    
+    if (token) {
+      fetchSchools();
+    }
+    
+    return () => { isMounted = false; };
+  }, [token, toast]);
+
   if (loading) return <div className="page"><SkeletonForm /></div>;
   if (error && !form.schoolEmail) return <div className="page"><div className="alert alert-error">{error}</div></div>;
 
@@ -68,7 +111,27 @@ export default function StudentEdit() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Edit Student</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+          <h2>Edit Student</h2>
+          <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
+            <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 40px',
+                border: '1px solid var(--color-border-strong)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text-default)',
+              }}
+            />
+          </div>
+        </div>
         <button className="btn-secondary" onClick={() => navigate('/students')}>
           <FiArrowLeft size={16} style={{ marginRight: 8 }} />
           Back to List
@@ -160,6 +223,15 @@ export default function StudentEdit() {
               <input value={form.motherTongue || ''} onChange={(e) => setForm({ ...form, motherTongue: e.target.value })} />
             </label>
           </div>
+          <div style={{ gridColumn: '1 / -1', marginTop: '16px' }}>
+            <ImageUpload
+              value={form.profileImage || ''}
+              onChange={(value) => setForm({ ...form, profileImage: value })}
+              onError={(error) => toast.error(error)}
+              label="Profile Image"
+              description="Drag and drop an image here, or click to select"
+            />
+          </div>
         </div>
 
         <div className="form-section">
@@ -170,7 +242,35 @@ export default function StudentEdit() {
           <div className="form-grid">
             <label>
               School Code *
-              <input value={form.schoolCode || ''} onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} required />
+              {loadingSchools ? (
+                <input 
+                  value={form.schoolCode || ''} 
+                  onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} 
+                  placeholder="Loading schools..."
+                  disabled
+                  required 
+                />
+              ) : schools.length > 0 ? (
+                <select 
+                  value={form.schoolCode || ''} 
+                  onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} 
+                  required 
+                >
+                  <option value="">Select School Code</option>
+                  {schools.map(school => (
+                    <option key={school.schoolCode || school.id} value={school.schoolCode || school.id}>
+                      {school.schoolCode || school.id} {school.schoolName ? `- ${school.schoolName}` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input 
+                  value={form.schoolCode || ''} 
+                  onChange={(e) => setForm({ ...form, schoolCode: e.target.value })} 
+                  placeholder="Enter school code"
+                  required 
+                />
+              )}
             </label>
             <label>
               Class *

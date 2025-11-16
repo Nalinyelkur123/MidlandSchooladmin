@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useSearch } from '../context/SearchContext';
 import { publicAsset } from '../config';
 import { 
   FiHome, FiUsers, FiUserCheck, FiUser, FiCalendar, FiBook, 
@@ -11,11 +12,25 @@ import {
 export default function DashboardLayout({ children }) {
   const { logout } = useAuth();
   const { toggleTheme, isDark } = useTheme();
+  const { searchQuery, setSearchQuery } = useSearch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Get search placeholder based on current route
+  const getSearchPlaceholder = () => {
+    if (location.pathname.startsWith('/students')) {
+      return 'Search students...';
+    } else if (location.pathname.startsWith('/teachers')) {
+      return 'Search teachers...';
+    } else if (location.pathname.startsWith('/admin')) {
+      return 'Search admins...';
+    } else if (location.pathname.startsWith('/schools')) {
+      return 'Search schools...';
+    }
+    return 'Search...';
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -128,16 +143,21 @@ export default function DashboardLayout({ children }) {
             >
               <FiMenu size={20} />
             </button>
-            <div className="topbar-search">
-              <FiSearch size={18} className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-            </div>
+            {!location.pathname.startsWith('/students') && 
+             !location.pathname.startsWith('/teachers') && 
+             !location.pathname.startsWith('/admin') && 
+             !location.pathname.startsWith('/schools') && (
+              <div className="topbar-search">
+                <FiSearch size={18} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder={getSearchPlaceholder()}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+            )}
           </div>
           <div className="topbar-right">
             <button className="topbar-icon-btn" aria-label="Grid">

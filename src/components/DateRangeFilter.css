@@ -1,0 +1,209 @@
+.date-range-filter-wrapper {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.date-range-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 40px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+  color: #374151;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.dark-theme .date-range-filter {
+  background: #0a0a0a;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+}
+
+.date-range-filter:hover {
+  border-color: var(--color-primary);
+  background: #f9fafb;
+}
+
+.dark-theme .date-range-filter:hover {
+  background: #1a1a1a;
+}
+
+.date-range-filter.has-value {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.dark-theme .date-range-filter.has-value {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.date-range-filter .filter-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.dark-theme .date-range-filter .filter-icon {
+  color: #94a3b8;
+}
+
+.date-range-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date-range-clear {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.date-range-clear:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.date-range-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  z-index: 1000;
+  min-width: 320px;
+}
+
+.dark-theme .date-range-dropdown {
+  background: #0a0a0a;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.date-range-inputs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.date-input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.date-input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dark-theme .date-input-group label {
+  color: #94a3b8;
+}
+
+.date-input-group input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.dark-theme .date-input-group input {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+}
+
+.date-input-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.date-range-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dark-theme .date-range-presets {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.date-preset-btn {
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.dark-theme .date-preset-btn {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+}
+
+.date-preset-btn:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .date-range-dropdown {
+    min-width: 100%;
+    right: auto;
+  }
+
+  .date-range-inputs {
+    flex-direction: column;
+  }
+
+  .date-range-presets {
+    grid-template-columns: 1fr;
+  }
+}
+

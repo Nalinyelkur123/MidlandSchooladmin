@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useSearch } from '../../context/SearchContext';
+import { FiSearch } from 'react-icons/fi';
 import { FiArrowLeft, FiUser, FiBriefcase, FiMail } from 'react-icons/fi';
 import {
   validateUsername,
@@ -20,6 +22,8 @@ export default function TeacherCreate() {
   const navigate = useNavigate();
   const { token } = useAuth();
   const toast = useToast();
+  const [schools, setSchools] = useState([]);
+  const [loadingSchools, setLoadingSchools] = useState(false);
   const [form, setForm] = useState({
     username: '',
     password: '',
@@ -29,6 +33,7 @@ export default function TeacherCreate() {
     department: '',
     designation: '',
     teacherCode: '',
+    experience: '',
     schoolEmail: '',
     personalEmail: '',
     phoneNumber: '',
@@ -37,6 +42,44 @@ export default function TeacherCreate() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+  const { searchQuery, setSearchQuery } = useSearch();
+
+  // Fetch schools for dropdown
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchSchools() {
+      setLoadingSchools(true);
+      try {
+        const url = getApiUrl('/midland/admin/schools/all');
+        const res = await fetch(url, { 
+          headers: getAuthHeaders(token)
+        });
+        
+        if (!res.ok) {
+          throw new Error('Failed to load schools');
+        }
+        
+        const data = await res.json();
+        const schoolsData = Array.isArray(data) ? data : [];
+        
+        if (isMounted) {
+          setSchools(schoolsData);
+        }
+      } catch (err) {
+        if (isMounted) {
+          toast.error('Failed to load schools. You can still enter school code manually.');
+        }
+      } finally {
+        if (isMounted) setLoadingSchools(false);
+      }
+    }
+    
+    if (token) {
+      fetchSchools();
+    }
+    
+    return () => { isMounted = false; };
+  }, [token, toast]);
 
   const handleFieldChange = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -139,7 +182,27 @@ export default function TeacherCreate() {
   return (
     <div className="page">
       <div className="page-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
         <h2>Create New Teacher</h2>
+          <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
+            <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 40px',
+                border: '1px solid var(--color-border-strong)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text-default)',
+              }}
+            />
+          </div>
+        </div>
         <button className="btn-secondary" onClick={() => navigate('/teachers')}>
           <FiArrowLeft size={16} style={{ marginRight: 8 }} />
           Back to List
@@ -171,6 +234,7 @@ export default function TeacherCreate() {
               department: String(form.department || '').trim(),
               designation: String(form.designation || '').trim(),
               teacherCode: String(form.teacherCode || '').trim(),
+              experience: String(form.experience || '').trim(),
               schoolEmail: String(form.schoolEmail || '').trim(),
               personalEmail: String(form.personalEmail || '').trim(),
               phoneNumber: String(form.phoneNumber || '').trim(),
@@ -373,13 +437,51 @@ export default function TeacherCreate() {
               {fieldErrors.teacherCode && <span className="field-error">{fieldErrors.teacherCode}</span>}
             </label>
             <label>
+              Experience (Years)
+              <input 
+                type="number"
+                min="0"
+                value={form.experience} 
+                onChange={(e) => handleFieldChange('experience', e.target.value)} 
+                className={fieldErrors.experience ? 'input-error' : ''}
+                placeholder="e.g., 5"
+              />
+              {fieldErrors.experience && <span className="field-error">{fieldErrors.experience}</span>}
+            </label>
+            <label>
               School Code *
+              {loadingSchools ? (
+                <input 
+                  value={form.schoolCode} 
+                  onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
+                  className={fieldErrors.schoolCode ? 'input-error' : ''}
+                  placeholder="Loading schools..."
+                  disabled
+                  required 
+                />
+              ) : schools.length > 0 ? (
+                <select 
+                  value={form.schoolCode} 
+                  onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
+                  className={fieldErrors.schoolCode ? 'input-error' : ''}
+                  required 
+                >
+                  <option value="">Select School Code</option>
+                  {schools.map(school => (
+                    <option key={school.schoolCode || school.id} value={school.schoolCode || school.id}>
+                      {school.schoolCode || school.id} {school.schoolName ? `- ${school.schoolName}` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
               <input 
                 value={form.schoolCode} 
                 onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
                 className={fieldErrors.schoolCode ? 'input-error' : ''}
+                  placeholder="Enter school code"
                 required 
               />
+              )}
               {fieldErrors.schoolCode && <span className="field-error">{fieldErrors.schoolCode}</span>}
             </label>
           </div>

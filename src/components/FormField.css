@@ -34,7 +34,7 @@
 
 .dark-theme .form-field input,
 .dark-theme .form-field select {
-  background: #1e293b;
+  background: #0a0a0a;
   border-color: rgba(255, 255, 255, 0.1);
   color: #e2e8f0;
 }

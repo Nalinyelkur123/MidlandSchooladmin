@@ -51,7 +51,7 @@
 }
 
 .dark-theme .dashboard-date {
-  background: #1e293b;
+  background: #0a0a0a;
   color: #cbd5e1;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .dark-theme .dashboard-card-modern {
-  background: #1e293b;
+  background: #0a0a0a;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
@@ -222,7 +222,7 @@
 }
 
 .dark-theme .stat-card-modern {
-  background: #1e293b;
+  background: #0a0a0a;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
@@ -290,6 +290,38 @@
   color: #b91c1c;
 }
 
+.dashboard-charts-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  height: 400px;
+}
+
+.dark-theme .chart-card {
+  background: #0a0a0a;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.dark-theme .chart-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
 .dashboard-bottom-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -307,7 +339,7 @@
 
 .dark-theme .quick-actions-modern,
 .dark-theme .recent-activity-modern {
-  background: #1e293b;
+  background: #0a0a0a;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
@@ -340,11 +372,13 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   text-align: left;
+  color: #1f2937;
 }
 
 .dark-theme .quick-action-modern {
-  background: #0f172a;
+  background: #000000;
   border-color: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
 }
 
 .quick-action-modern:hover,
@@ -374,6 +408,10 @@
   color: inherit;
 }
 
+.dark-theme .quick-action-label {
+  color: #f1f5f9;
+}
+
 .quick-action-description {
   font-size: 12px;
   color: #6b7280;
@@ -392,6 +430,10 @@
   justify-content: center;
   flex-shrink: 0;
   transition: all 0.2s ease;
+}
+
+.dark-theme .action-icon-wrapper svg {
+  color: #cbd5e1;
 }
 
 .quick-action-modern:hover .action-icon-wrapper {
@@ -420,7 +462,7 @@
 }
 
 .dark-theme .activity-item {
-  background: #0f172a;
+  background: #000000;
 }
 
 .activity-item:hover {
@@ -469,6 +511,19 @@
   .dashboard-bottom-section {
     grid-template-columns: 1fr;
   }
+
+  .dashboard-charts-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .chart-card {
+    height: 350px;
+  }
+
+  .dashboard-stats-modern {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -476,12 +531,116 @@
     padding: 16px;
   }
 
+  .dashboard-header-modern {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .dashboard-title {
+    font-size: 24px;
+  }
+
+  .dashboard-subtitle {
+    font-size: 14px;
+  }
+
+  .dashboard-date {
+    width: 100%;
+    justify-content: center;
+  }
+
   .dashboard-grid-modern {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dashboard-stats-modern {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card-modern {
+    padding: 16px;
+  }
+
+  .stat-value-modern {
+    font-size: 20px;
+  }
+
+  .dashboard-charts-section {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .chart-card {
+    height: 300px;
+    padding: 16px;
   }
 
   .dashboard-bottom-section {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .quick-actions-grid-modern {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-action-modern {
+    padding: 14px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-modern {
+    padding: 12px;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+
+  .card-count {
+    font-size: 24px;
+  }
+
+  .card-label {
+    font-size: 13px;
+  }
+
+  .card-trend {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .stat-card-modern {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .stat-icon-modern {
+    width: 40px;
+    height: 40px;
+  }
+
+  .contact-card {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

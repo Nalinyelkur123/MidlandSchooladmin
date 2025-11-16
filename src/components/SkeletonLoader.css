@@ -27,9 +27,9 @@
 .dark-theme .skeleton-avatar {
   background: linear-gradient(
     90deg,
-    #1e293b 25%,
-    #334155 50%,
-    #1e293b 75%
+    #0a0a0a 25%,
+    #1a1a1a 50%,
+    #0a0a0a 75%
   );
   background-size: 200% 100%;
 }
@@ -54,7 +54,7 @@
 }
 
 .dark-theme .skeleton-card {
-  background: #1e293b;
+  background: #0a0a0a;
 }
 
 .skeleton-icon {
@@ -95,7 +95,7 @@
 }
 
 .dark-theme .skeleton-table-container {
-  background: #1e293b;
+  background: #0a0a0a;
 }
 
 .skeleton-table-header {
@@ -108,7 +108,7 @@
 }
 
 .dark-theme .skeleton-table-header {
-  background: #0f172a;
+  background: #000000;
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -162,7 +162,7 @@
 }
 
 .dark-theme .skeleton-profile {
-  background: #1e293b;
+  background: #0a0a0a;
 }
 
 .skeleton-profile-header {

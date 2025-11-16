@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { FiArrowLeft, FiHome, FiMail } from 'react-icons/fi';
+import { useSearch } from '../../context/SearchContext';
+import { FiArrowLeft, FiHome, FiMail, FiSearch } from 'react-icons/fi';
 import {
   validateEmail,
   validatePhone,
@@ -16,6 +17,7 @@ export default function SchoolCreate() {
   const navigate = useNavigate();
   const { token } = useAuth();
   const toast = useToast();
+  const { searchQuery, setSearchQuery } = useSearch();
   const [form, setForm] = useState({
     schoolCode: '',
     schoolName: '',
@@ -129,7 +131,27 @@ export default function SchoolCreate() {
   return (
     <div className="page">
       <div className="page-header">
-        <h2>Create New School</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+          <h2>Create New School</h2>
+          <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
+            <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 40px',
+                border: '1px solid var(--color-border-strong)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text-default)',
+              }}
+            />
+          </div>
+        </div>
         <button className="btn-secondary" onClick={() => navigate('/schools')}>
           <FiArrowLeft size={16} style={{ marginRight: 8 }} />
           Back to List
