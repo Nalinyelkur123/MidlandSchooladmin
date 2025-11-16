@@ -1,0 +1,8 @@
+.attendance-page {
+  padding: 16px;
+}
+.page-header h2 { margin: 0 0 6px 0; }
+.muted { color: #666; margin: 0 0 12px 0; }
+.attendance-table { width: 100%; border-collapse: collapse; }
+.attendance-table th, .attendance-table td { border: 1px solid #e6e6e6; padding: 8px 10px; text-align: left; }
+.attendance-table th { background: #f8f8f8; }

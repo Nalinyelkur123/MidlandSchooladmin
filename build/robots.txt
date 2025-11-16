@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://4.237.122.143.nip.io/sitemap.xml
+Sitemap: https://4.237.122.143.nip.io/sitemap.xml

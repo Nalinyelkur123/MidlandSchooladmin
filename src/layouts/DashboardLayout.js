@@ -6,7 +6,7 @@ import { useSearch } from '../context/SearchContext';
 import { publicAsset } from '../config';
 import { 
   FiHome, FiUsers, FiUserCheck, FiUser, FiCalendar, FiBook, 
-  FiMenu, FiSearch, FiSun, FiMoon, FiGrid, FiArrowRight, FiLayers
+  FiMenu, FiSearch, FiSun, FiMoon, FiGrid, FiArrowRight, FiLayers, FiCheckSquare
 } from 'react-icons/fi';
 
 export default function DashboardLayout({ children }) {
@@ -63,6 +63,7 @@ export default function DashboardLayout({ children }) {
     { path: '/schools', label: 'Schools', icon: FiLayers },
     { path: '/subjects', label: 'Subjects', icon: FiBook },
     { path: '/timetable', label: 'Timetable', icon: FiCalendar },
+    { path: '/attendance', label: 'Attendance', icon: FiCheckSquare },
   ];
 
   const toggleSidebar = () => {

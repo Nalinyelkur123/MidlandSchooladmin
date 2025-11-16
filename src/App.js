@@ -25,6 +25,7 @@ import SchoolEdit from './pages/schools/SchoolEdit';
 import SchoolProfile from './pages/schools/SchoolProfile';
 import Timetable from './pages/Timetable';
 import Subjects from './pages/Subjects';
+import Attendance from './pages/Attendance';
 import DashboardLayout from './layouts/DashboardLayout';
 import './App.css';
 
@@ -62,6 +63,7 @@ function App() {
                     <Route path="/schools/:id" element={<SchoolProfile />} />
                     <Route path="/schools/:id/edit" element={<SchoolEdit />} />
                     <Route path="/timetable" element={<Timetable />} />
+                    <Route path="/attendance" element={<Attendance />} />
                     <Route path="/subjects" element={<Subjects />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
