@@ -5,7 +5,7 @@ module.exports = function(app) {
   app.use(
     '/midland',
     createProxyMiddleware({
-      target: 'http://4.198.16.72.nip.io',
+      target: 'http://4.237.122.143.nip.io',
       changeOrigin: true,
       secure: false,
       logLevel: 'debug',
@@ -13,7 +13,7 @@ module.exports = function(app) {
         'Accept': 'application/json',
       },
       onProxyReq: (proxyReq, req, res) => {
-        proxyReq.setHeader('Host', '4.198.16.72.nip.io');
+        proxyReq.setHeader('Host', '4.237.122.143.nip.io');
         
         if (req.headers['content-type']) {
           proxyReq.setHeader('Content-Type', req.headers['content-type']);

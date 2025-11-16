@@ -13,8 +13,8 @@ export function getApiUrl(path) {
 
   // Otherwise use an explicit base URL. In production prefer HTTPS.
   const isProduction = process.env.NODE_ENV === 'production';
-  const defaultHost = '4.198.16.72.nip.io';
-  const baseUrl = isProduction ? `https://${defaultHost}` : `http://${defaultHost}`;
+  const defaultHost = '4.237.122.143.nip.io';
+  const baseUrl = isProduction ? `http://${defaultHost}` : `http://${defaultHost}`;
   return `${baseUrl}${cleanPath}`;
 }
 

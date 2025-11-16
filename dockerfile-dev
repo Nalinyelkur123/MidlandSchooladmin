@@ -1,0 +1,32 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Set environment to development
+ENV NODE_ENV=development
+
+# Copy only dependency files first for better caching
+COPY package.json package-lock.json* ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the full project
+COPY . .
+
+# Expose CRA development port
+EXPOSE 3000
+
+# Hot reload environment variables
+ENV FAST_REFRESH=true
+ENV GENERATE_SOURCEMAP=true
+ENV CHOKIDAR_USEPOLLING=true
+ENV CHOKIDAR_INTERVAL=1000
+ENV WDS_SOCKET_HOST=0.0.0.0
+ENV WDS_SOCKET_PORT=3000
+ENV WDS_SOCKET_PATH=/ws
+ENV DISABLE_ESLINT_PLUGIN=false
+ENV TSC_COMPILE_ON_ERROR=true
+
+# Start React dev server
+CMD ["npm", "start"]

@@ -47,7 +47,7 @@ export default function Students() {
     } catch (err) {
       const errorMsg = err.message || 'Failed to load students';
       if (err.message && (err.message.includes('CORS') || err.message.includes('Failed to fetch') || err.message.includes('NetworkError'))) {
-        setError('CORS error: The backend at http://4.198.16.72.nip.io needs to allow requests from your frontend origin. Please configure CORS headers on the backend.');
+        setError('CORS error: The backend at http://4.237.122.143.nip.io needs to allow requests from your frontend origin. Please configure CORS headers on the backend.');
         toast.error('Failed to load students. Please check your connection.');
       } else {
         setError(errorMsg);
