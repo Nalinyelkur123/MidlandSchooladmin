@@ -112,7 +112,7 @@ export default function StudentEdit() {
     <div className="page">
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
-          <h2>Edit Student</h2>
+        <h2>Edit Student</h2>
           <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
             <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
             <input

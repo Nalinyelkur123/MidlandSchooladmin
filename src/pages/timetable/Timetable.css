@@ -1,0 +1,484 @@
+.timetable-week-view {
+  background: var(--color-surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--color-border);
+  margin-top: 8px;
+}
+
+.timetable-week-header {
+  display: grid;
+  grid-template-columns: 140px repeat(6, 1fr);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-surface) 100%);
+  border-bottom: 3px solid var(--color-primary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.timetable-week-header-cell {
+  padding: 18px 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-default);
+  border-right: 1px solid var(--color-border);
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.timetable-week-header-cell:hover {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.timetable-week-header-cell:last-child {
+  border-right: none;
+}
+
+.timetable-week-header-cell.time-header {
+  font-weight: 800;
+  color: var(--color-primary);
+  font-size: 15px;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.timetable-week-header-cell.current-day {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-primary);
+  font-weight: 800;
+  position: relative;
+}
+
+.current-indicator {
+  display: inline-block;
+  margin-left: 6px;
+  color: var(--color-primary);
+  font-size: 10px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.timetable-week-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.timetable-week-row {
+  display: grid;
+  grid-template-columns: 140px repeat(6, 1fr);
+  border-bottom: 1px solid var(--color-border);
+  min-height: 100px;
+  transition: background-color 0.2s ease;
+}
+
+.timetable-week-row:last-child {
+  border-bottom: none;
+}
+
+.timetable-week-row:hover {
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.timetable-week-row:nth-child(even) {
+  background: var(--color-surface-alt);
+}
+
+.timetable-week-row:nth-child(even):hover {
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.timetable-time-cell {
+  padding: 16px 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-text-default);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-surface) 100%);
+  border-right: 2px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03);
+}
+
+.timetable-day-cell {
+  padding: 10px;
+  border-right: 1px solid var(--color-border);
+  min-height: 100px;
+  position: relative;
+  background: var(--color-surface);
+  transition: background-color 0.2s ease;
+}
+
+.timetable-day-cell:hover {
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.timetable-day-cell.current-day-cell {
+  background: rgba(239, 68, 68, 0.05);
+  border-left: 3px solid var(--color-primary);
+}
+
+.timetable-day-cell.current-period {
+  background: rgba(239, 68, 68, 0.1);
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.timetable-day-cell:last-child {
+  border-right: none;
+}
+
+.timetable-entry-card {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.timetable-entry-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.timetable-entry-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  z-index: 20;
+}
+
+.timetable-entry-card.current-period-card {
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4), 0 0 0 3px rgba(239, 68, 68, 0.2);
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4), 0 0 0 3px rgba(239, 68, 68, 0.2); }
+  50% { box-shadow: 0 4px 16px rgba(239, 68, 68, 0.6), 0 0 0 4px rgba(239, 68, 68, 0.3); }
+}
+
+.current-period-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-primary);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: pulse 2s infinite;
+}
+
+.timetable-entry-card.empty {
+  background: transparent;
+  border: none;
+  color: transparent;
+  cursor: default;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+}
+
+.timetable-entry-card.empty:hover {
+  transform: none;
+  box-shadow: none;
+  border: none;
+}
+
+.timetable-entry-subject {
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 6px;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timetable-entry-code {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+}
+
+.timetable-entry-details {
+  font-size: 12px;
+  opacity: 0.95;
+  line-height: 1.4;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.timetable-entry-room {
+  font-size: 11px;
+  opacity: 0.9;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.timetable-entry-teacher {
+  font-size: 11px;
+  opacity: 0.9;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.timetable-period-label {
+  font-weight: 800;
+  color: var(--color-primary);
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.timetable-time-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.timetable-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-muted);
+}
+
+.timetable-empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.timetable-empty-state-text {
+  font-size: 14px;
+}
+
+.timetable-empty-current {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 6px;
+  border: 1px dashed var(--color-primary);
+}
+
+.timetable-entry-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.timetable-entry-card:hover .timetable-entry-actions {
+  opacity: 1;
+}
+
+.timetable-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-default);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.timetable-action-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.timetable-action-btn.edit-btn:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.timetable-action-btn.delete-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.timetable-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--color-surface-alt);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.legend-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+/* Better visual separation */
+.timetable-week-body {
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.timetable-week-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.timetable-week-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.timetable-week-body::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.timetable-week-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .timetable-week-header,
+  .timetable-week-row {
+    grid-template-columns: 120px repeat(6, 1fr);
+  }
+  
+  .timetable-time-cell {
+    padding: 8px;
+    font-size: 11px;
+  }
+  
+  .timetable-entry-card {
+    padding: 8px;
+  }
+  
+  .timetable-entry-subject {
+    font-size: 12px;
+  }
+  
+  .timetable-entry-details {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .timetable-week-view {
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+  
+  .timetable-week-header,
+  .timetable-week-row {
+    min-width: 750px;
+  }
+  
+  .timetable-time-cell {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+  }
+}
+
+/* Color variations for different subjects */
+.timetable-entry-card.color-1 {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.timetable-entry-card.color-2 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.timetable-entry-card.color-3 {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.timetable-entry-card.color-4 {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.timetable-entry-card.color-5 {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.timetable-entry-card.color-6 {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+.timetable-entry-card.color-7 {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+}
+

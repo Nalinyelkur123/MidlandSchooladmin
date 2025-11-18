@@ -328,7 +328,7 @@ export default function StudentCreate() {
     <div className="page">
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
-          <h2>Create New Student</h2>
+        <h2>Create New Student</h2>
           <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
             <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
             <input
@@ -643,7 +643,7 @@ export default function StudentCreate() {
               }}
               label="Profile Image"
               description="Drag and drop an image here, or click to select"
-            />
+              />
             {fieldErrors.profileImage && <span className="field-error" style={{ marginTop: '8px', display: 'block' }}>{fieldErrors.profileImage}</span>}
           </div>
         </div>
@@ -680,13 +680,13 @@ export default function StudentCreate() {
                   ))}
                 </select>
               ) : (
-                <input 
-                  value={form.schoolCode} 
-                  onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
-                  className={fieldErrors.schoolCode ? 'input-error' : ''}
+              <input 
+                value={form.schoolCode} 
+                onChange={(e) => handleFieldChange('schoolCode', e.target.value)} 
+                className={fieldErrors.schoolCode ? 'input-error' : ''}
                   placeholder="Enter school code"
-                  required 
-                />
+                required 
+              />
               )}
               {fieldErrors.schoolCode && <span className="field-error">{fieldErrors.schoolCode}</span>}
             </label>

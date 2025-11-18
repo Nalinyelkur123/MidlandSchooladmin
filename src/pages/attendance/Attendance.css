@@ -1,0 +1,540 @@
+.attendance-calendar-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  background: var(--color-surface);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--color-border);
+}
+
+.calendar-section {
+  display: flex;
+  flex-direction: column;
+}
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.calendar-month-year {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.calendar-nav-btn {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-text-default);
+}
+
+.calendar-nav-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.calendar-month-year {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-default);
+  margin: 0;
+}
+
+.calendar-grid {
+  margin-bottom: 0;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  padding: 6px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--color-surface);
+  position: relative;
+  padding: 4px;
+  min-height: 40px;
+}
+
+.calendar-day:hover {
+  background: var(--color-primary-surface);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-day.empty {
+  border: none;
+  cursor: default;
+  background: transparent;
+}
+
+.calendar-day.empty:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.calendar-day.today {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-primary);
+}
+
+.calendar-day.selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.calendar-day.selected .calendar-day-number {
+  color: white;
+  font-weight: 800;
+}
+
+.calendar-day-number {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.calendar-day.future {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--color-surface-alt);
+}
+
+.calendar-day.future:hover {
+  transform: none;
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+
+.calendar-day.future .calendar-day-number {
+  color: var(--color-text-muted);
+}
+
+.today-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.calendar-day.selected .today-indicator {
+  background: white;
+}
+
+.attendance-periods {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.periods-section {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 300px);
+}
+
+.periods-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-text-default);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.periods-title::before {
+  content: '📅';
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.periods-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 8px;
+  flex: 1;
+}
+
+.periods-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.periods-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.periods-grid::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+.periods-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
+}
+
+.period-card {
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-alt) 100%);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.period-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.period-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(239, 68, 68, 0.15);
+  background: var(--color-primary-surface);
+}
+
+.period-card:hover::before {
+  transform: scaleX(1);
+}
+
+.period-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.period-number {
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--color-primary);
+  background: rgba(239, 68, 68, 0.1);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.period-time {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  background: var(--color-surface);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.period-subject {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--color-text-default);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.period-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.period-details span:first-child {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.period-details span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.period-details span:last-child::before {
+  content: '📍';
+  font-size: 14px;
+}
+
+/* Attendance Modal */
+.attendance-modal .modal-content {
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-period-info {
+  background: var(--color-surface-alt);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  font-size: 14px;
+}
+
+.modal-period-info div {
+  color: var(--color-text-default);
+}
+
+.modal-period-info strong {
+  color: var(--color-text-muted);
+  margin-right: 8px;
+}
+
+.attendance-students-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.attendance-student-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--color-surface-alt);
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+
+.attendance-student-row:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.student-info {
+  flex: 1;
+}
+
+.student-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-text-default);
+  margin-bottom: 4px;
+}
+
+.student-code {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.attendance-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.status-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.status-btn.present {
+  border-color: #10b981;
+}
+
+.status-btn.present:hover,
+.status-btn.present.active {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.status-btn.absent {
+  border-color: #ef4444;
+}
+
+.status-btn.absent:hover,
+.status-btn.absent.active {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.status-btn.leave {
+  border-color: #f59e0b;
+}
+
+.status-btn.leave:hover,
+.status-btn.leave.active {
+  background: #f59e0b;
+  color: white;
+  border-color: #f59e0b;
+}
+
+.status-icon {
+  margin-right: 4px;
+}
+
+.status-icon.present {
+  color: #10b981;
+}
+
+.status-icon.absent {
+  color: #ef4444;
+}
+
+.status-icon.leave {
+  color: #f59e0b;
+}
+
+.attendance-list-view {
+  background: var(--color-surface);
+  border-radius: 16px;
+  padding: 24px;
+  min-height: 400px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .attendance-calendar-view {
+    grid-template-columns: 1fr;
+  }
+  
+  .periods-section {
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .attendance-calendar-view {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  
+  .calendar-days {
+    gap: 3px;
+  }
+  
+  .calendar-day {
+    padding: 3px;
+    min-height: 35px;
+  }
+  
+  .calendar-day-number {
+    font-size: 12px;
+  }
+  
+  .calendar-weekday {
+    font-size: 10px;
+    padding: 4px 2px;
+  }
+  
+  .periods-grid {
+    gap: 10px;
+  }
+  
+  .period-card {
+    padding: 12px;
+  }
+  
+  .attendance-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .status-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .attendance-student-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .modal-period-info {
+    grid-template-columns: 1fr;
+  }
+}

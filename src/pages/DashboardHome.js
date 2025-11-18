@@ -35,7 +35,7 @@ export default function DashboardHome() {
     if (forceRefresh) {
       setRefreshing(true);
     } else {
-      hasFetchedRef.current = true;
+    hasFetchedRef.current = true;
     }
     setLoading(true);
     try {
@@ -274,9 +274,9 @@ export default function DashboardHome() {
             <FiRefreshCw size={18} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
             {refreshing ? 'Refreshing...' : 'Refresh'}
           </button>
-          <div className="dashboard-date">
-            <FiClock size={18} />
-            <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <div className="dashboard-date">
+          <FiClock size={18} />
+          <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
         </div>
       </div>

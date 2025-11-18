@@ -9,6 +9,7 @@ const iconMap = {
   schools: FiUsers,
   subjects: FiBook,
   timetable: FiCalendar,
+  attendance: FiCalendar,
   default: FiInbox,
 };
 
@@ -46,6 +47,10 @@ export default function EmptyState({
     timetable: {
       title: 'No Timetable Entries',
       message: 'Create timetable entries to schedule classes.',
+    },
+    attendance: {
+      title: 'No Periods Available',
+      message: 'No timetable periods found for the selected date. Please select another date or create timetable entries.',
     },
     default: {
       title: title || 'No Data Available',

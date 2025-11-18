@@ -23,9 +23,12 @@ import Schools from './pages/schools/Schools';
 import SchoolCreate from './pages/schools/SchoolCreate';
 import SchoolEdit from './pages/schools/SchoolEdit';
 import SchoolProfile from './pages/schools/SchoolProfile';
-import Timetable from './pages/Timetable';
-import Subjects from './pages/Subjects';
-import Attendance from './pages/Attendance';
+import Timetable from './pages/timetable/Timetable';
+import TimetableCreate from './pages/timetable/TimetableCreate';
+import Subjects from './pages/subjects/Subjects';
+import SubjectCreate from './pages/subjects/SubjectCreate';
+import SubjectEdit from './pages/subjects/SubjectEdit';
+import Attendance from './pages/attendance/Attendance';
 import DashboardLayout from './layouts/DashboardLayout';
 import './App.css';
 
@@ -63,8 +66,11 @@ function App() {
                     <Route path="/schools/:id" element={<SchoolProfile />} />
                     <Route path="/schools/:id/edit" element={<SchoolEdit />} />
                     <Route path="/timetable" element={<Timetable />} />
+                    <Route path="/timetable/create" element={<TimetableCreate />} />
                     <Route path="/attendance" element={<Attendance />} />
                     <Route path="/subjects" element={<Subjects />} />
+                    <Route path="/subjects/create" element={<SubjectCreate />} />
+                    <Route path="/subjects/:id/edit" element={<SubjectEdit />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </DashboardLayout>

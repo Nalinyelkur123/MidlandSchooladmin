@@ -425,7 +425,7 @@ export default function Teachers() {
       <div className="page-header">
         <div className="header-main" style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
           <div>
-            <h2>Teachers</h2>
+          <h2>Teachers</h2>
             <div className="meta">
               {loading ? 'Loading…' : `${sortedAndFilteredRows.length} teacher${sortedAndFilteredRows.length !== 1 ? 's' : ''}`}
               {activeFilterCount > 0 && (
@@ -457,8 +457,8 @@ export default function Teachers() {
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           {selectedItems.size > 0 && (
             <>
-              <button className="btn-danger" onClick={handleBulkDelete} title="Delete selected">
-                <FiTrash2 size={18} style={{ marginRight: 8 }} />
+              <button className="btn-danger btn-compact" onClick={handleBulkDelete} title="Delete selected">
+                <FiTrash2 size={18} style={{ marginRight: 6 }} />
                 Delete ({selectedItems.size})
               </button>
             </>
@@ -478,10 +478,10 @@ export default function Teachers() {
             onChange={handleFileImport}
             style={{ display: 'none' }}
           />
-          <button className="btn-primary" onClick={() => navigate('/teachers/create')}>
-            <FiPlus size={18} style={{ marginRight: 8 }} />
-            Add Teacher
-          </button>
+        <button className="btn-primary" onClick={() => navigate('/teachers/create')}>
+          <FiPlus size={18} style={{ marginRight: 8 }} />
+          Add Teacher
+        </button>
         </div>
       </div>
 
@@ -724,12 +724,12 @@ export default function Teachers() {
                   for (const email of emails) {
                     try {
                       const emailKey = encodeURIComponent(email);
-                      const url = getApiUrl(`/midland/admin/teachers/delete/${emailKey}`);
-                      const res = await fetch(url, {
-                        method: 'DELETE',
-                        headers: getAuthHeaders(token)
-                      });
-                      
+                  const url = getApiUrl(`/midland/admin/teachers/delete/${emailKey}`);
+                  const res = await fetch(url, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders(token)
+                  });
+                  
                       if (res.ok) {
                         successCount++;
                       } else {
