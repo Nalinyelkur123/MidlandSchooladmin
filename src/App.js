@@ -29,6 +29,7 @@ import Subjects from './pages/subjects/Subjects';
 import SubjectCreate from './pages/subjects/SubjectCreate';
 import SubjectEdit from './pages/subjects/SubjectEdit';
 import Attendance from './pages/attendance/Attendance';
+import Events from './pages/Events';
 import DashboardLayout from './layouts/DashboardLayout';
 import './App.css';
 
@@ -68,6 +69,7 @@ function App() {
                     <Route path="/timetable" element={<Timetable />} />
                     <Route path="/timetable/create" element={<TimetableCreate />} />
                     <Route path="/attendance" element={<Attendance />} />
+                    <Route path="/events" element={<Events />} />
                     <Route path="/subjects" element={<Subjects />} />
                     <Route path="/subjects/create" element={<SubjectCreate />} />
                     <Route path="/subjects/:id/edit" element={<SubjectEdit />} />

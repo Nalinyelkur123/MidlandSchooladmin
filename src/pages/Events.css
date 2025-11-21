@@ -1,0 +1,45 @@
+.events-page {
+  padding: 16px;
+}
+
+.page-header h2 {
+  margin: 0 0 6px 0;
+}
+
+.muted {
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.event-card {
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+  transition: box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.event-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.event-card strong {
+  color: #333;
+}
