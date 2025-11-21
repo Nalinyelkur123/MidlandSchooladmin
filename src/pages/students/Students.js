@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiEdit2, FiTrash2, FiPlus, FiBook, FiHash, FiUsers, FiDownload, FiX, FiSearch, FiUpload } from 'react-icons/fi';
 import { SkeletonTable } from '../../components/SkeletonLoader';
@@ -54,22 +55,16 @@ export default function Students() {
     setLoading(true);
     setError('');
     try {
-      const url = getApiUrl('/midland/admin/students/all');
-      const res = await fetch(url, { 
-        headers: getAuthHeaders(token)
-      });
+      const allStudents = await fetchAllPaginatedItems(
+        '/midland/admin/students/all',
+        token,
+        getApiUrl,
+        getAuthHeaders
+      );
       
-      if (!res.ok) {
-        throw new Error(`Failed to load students: ${res.status} ${res.statusText}`);
-      }
-      
-      const data = await res.json();
-      const studentsData = Array.isArray(data) ? data : [];
-      
-      // Only treat as empty data if we got a successful 200 OK response with empty array
-      setStudents(studentsData);
-      setError(''); // Clear any previous errors
-      isEmptyRef.current = studentsData.length === 0;
+      setStudents(allStudents);
+      setError('');
+      isEmptyRef.current = allStudents.length === 0;
     } catch (err) {
       const errorMsg = err.message || 'Failed to load students';
       if (err.message && (err.message.includes('CORS') || err.message.includes('Failed to fetch') || err.message.includes('NetworkError'))) {

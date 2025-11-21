@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiCalendar, FiPlus, FiSearch, FiHash, FiBook, FiX, FiClock, FiEdit2, FiTrash2, FiInfo, FiMapPin, FiUser } from 'react-icons/fi';
 import { SkeletonTable } from '../../components/SkeletonLoader';
@@ -44,22 +45,16 @@ export default function Timetable() {
     setLoading(true);
     setError('');
     try {
-      const path = '/midland/users/timetables/active';
-      const url = getApiUrl(path);
-      const res = await fetch(url, { 
-        headers: getAuthHeaders(token)
-      });
+      const allEntries = await fetchAllPaginatedItems(
+        '/midland/users/timetables/active',
+        token,
+        getApiUrl,
+        getAuthHeaders
+      );
       
-      if (!res.ok) {
-        throw new Error(`Request failed ${res.status}`);
-      }
-      
-      const data = await res.json();
-      const entriesData = Array.isArray(data) ? data : [];
-      
-      setEntries(entriesData);
+      setEntries(allEntries);
       setError('');
-      isEmptyRef.current = entriesData.length === 0;
+      isEmptyRef.current = allEntries.length === 0;
     } catch (err) {
       const errorMsg = err.message || 'Failed to load timetable';
       setError(errorMsg);

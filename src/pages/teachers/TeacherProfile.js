@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { SkeletonProfile } from '../../components/SkeletonLoader';
 import { FiEdit2, FiArrowLeft, FiPhone, FiMail, FiHome, FiCalendar, FiTag, FiHash, FiBriefcase, FiUser, FiPhoneCall } from 'react-icons/fi';
 import StatusBadge from '../../components/StatusBadge';
@@ -24,17 +25,12 @@ export default function TeacherProfile() {
       setLoading(true);
       setError('');
       try {
-        const url = getApiUrl('/midland/admin/teachers/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load teacher');
-        }
-        
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : [];
+        const list = await fetchAllPaginatedItems(
+          '/midland/admin/teachers/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         const match = list.find(t => 
           String(t.schoolEmail) === id || 

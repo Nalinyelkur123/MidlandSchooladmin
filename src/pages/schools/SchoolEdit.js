@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiArrowLeft, FiHome, FiMail, FiSearch } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
@@ -63,17 +64,12 @@ export default function SchoolEdit() {
         
         // If not found, fetch all and search
         if (!schoolData) {
-          const url = getApiUrl('/midland/admin/schools/all');
-          const res = await fetch(url, { 
-            headers: getAuthHeaders(token)
-          });
-          
-          if (!res.ok) {
-            throw new Error('Failed to load school');
-          }
-          
-          const data = await res.json();
-          const list = Array.isArray(data) ? data : [];
+          const list = await fetchAllPaginatedItems(
+            '/midland/admin/schools/all',
+            token,
+            getApiUrl,
+            getAuthHeaders
+          );
           
           // Try multiple matching strategies
           const match = list.find(s => {

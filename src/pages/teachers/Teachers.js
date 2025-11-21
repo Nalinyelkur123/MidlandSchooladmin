@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiEdit2, FiTrash2, FiPlus, FiBriefcase, FiTag, FiUserCheck, FiDownload, FiX, FiSearch, FiUpload } from 'react-icons/fi';
 import { SkeletonTable } from '../../components/SkeletonLoader';
@@ -54,22 +55,16 @@ export default function Teachers() {
     setLoading(true);
     setError('');
     try {
-      const url = getApiUrl('/midland/admin/teachers/all');
-      const res = await fetch(url, { 
-        headers: getAuthHeaders(token)
-      });
+      const allTeachers = await fetchAllPaginatedItems(
+        '/midland/admin/teachers/all',
+        token,
+        getApiUrl,
+        getAuthHeaders
+      );
       
-      if (!res.ok) {
-        throw new Error(`Failed to load teachers: ${res.status} ${res.statusText}`);
-      }
-      
-      const data = await res.json();
-      const teachersData = Array.isArray(data) ? data : [];
-      
-      // Only treat as empty data if we got a successful 200 OK response with empty array
-      setTeachers(teachersData);
-      setError(''); // Clear any previous errors
-      isEmptyRef.current = teachersData.length === 0;
+      setTeachers(allTeachers);
+      setError('');
+      isEmptyRef.current = allTeachers.length === 0;
     } catch (err) {
       const errorMsg = err.message || 'Failed to load teachers';
       setError(errorMsg);

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiSearch } from 'react-icons/fi';
 import { FiArrowLeft, FiUser, FiBook, FiMail, FiUsers, FiHome } from 'react-icons/fi';
@@ -69,17 +70,12 @@ export default function StudentCreate() {
     async function fetchSchools() {
       setLoadingSchools(true);
       try {
-        const url = getApiUrl('/midland/admin/schools/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load schools');
-        }
-        
-        const data = await res.json();
-        const schoolsData = Array.isArray(data) ? data : [];
+        const schoolsData = await fetchAllPaginatedItems(
+          '/midland/admin/schools/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         if (isMounted) {
           setSchools(schoolsData);
@@ -370,14 +366,14 @@ export default function StudentCreate() {
           
           // Check for duplicates
           try {
-            const checkUrl = getApiUrl('/midland/admin/students/all');
-            const checkRes = await fetch(checkUrl, {
-              headers: getAuthHeaders(token)
-            });
+            const studentsArray = await fetchAllPaginatedItems(
+              '/midland/admin/students/all',
+              token,
+              getApiUrl,
+              getAuthHeaders
+            );
             
-            if (checkRes.ok) {
-              const existingStudents = await checkRes.json();
-              const studentsArray = Array.isArray(existingStudents) ? existingStudents : [];
+            if (studentsArray.length > 0) {
               
               // Check for duplicate admission number
               if (form.admissionNumber && studentsArray.some(s => 

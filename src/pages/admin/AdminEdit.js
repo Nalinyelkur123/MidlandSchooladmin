@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiArrowLeft, FiUser, FiMail, FiSearch } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
@@ -84,17 +85,12 @@ export default function AdminEdit() {
         
         // If not found, fetch all and search
         if (!adminData) {
-          const url = getApiUrl('/midland/admin/all');
-          const res = await fetch(url, { 
-            headers: getAuthHeaders(token)
-          });
-          
-          if (!res.ok) {
-            throw new Error('Failed to load admin');
-          }
-          
-          const data = await res.json();
-          const list = Array.isArray(data) ? data : [];
+          const list = await fetchAllPaginatedItems(
+            '/midland/admin/all',
+            token,
+            getApiUrl,
+            getAuthHeaders
+          );
           
           // Try multiple matching strategies
           const match = list.find(a => {

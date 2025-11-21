@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiArrowLeft, FiUser, FiBook, FiMail, FiUsers, FiSearch } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
@@ -28,17 +29,13 @@ export default function StudentEdit() {
       setLoading(true);
       setError('');
       try {
-        const url = getApiUrl('/midland/admin/students/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
+        const list = await fetchAllPaginatedItems(
+          '/midland/admin/students/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
-        if (!res.ok) {
-          throw new Error('Failed to load student');
-        }
-        
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : [];
         const match = list.find(s => 
           String(s.schoolEmail) === id || 
           String(s.personalEmail) === id ||
@@ -72,17 +69,12 @@ export default function StudentEdit() {
     async function fetchSchools() {
       setLoadingSchools(true);
       try {
-        const url = getApiUrl('/midland/admin/schools/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load schools');
-        }
-        
-        const data = await res.json();
-        const schoolsData = Array.isArray(data) ? data : [];
+        const schoolsData = await fetchAllPaginatedItems(
+          '/midland/admin/schools/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         if (isMounted) {
           setSchools(schoolsData);

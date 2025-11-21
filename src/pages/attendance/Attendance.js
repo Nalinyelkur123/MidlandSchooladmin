@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiCalendar, FiClock, FiCheckCircle, FiXCircle, FiAlertCircle, FiChevronLeft, FiChevronRight, FiSearch, FiHash, FiX } from 'react-icons/fi';
 import Modal from 'react-modal';
@@ -121,29 +122,47 @@ export default function Attendance() {
     
     setLoading(true);
     try {
-      // Get students from the period's grade and section
-      // For now, we'll use a mock or need to get from another API
-      // Assuming we have student data or need to fetch it
-      const mockStudents = [
-        { studentCode: 'STD1001', name: 'Alice Johnson', admissionNumber: 'ADM001' },
-        { studentCode: 'STD1002', name: 'Bob Smith', admissionNumber: 'ADM002' },
-        { studentCode: 'STD1003', name: 'Charlie Lee', admissionNumber: 'ADM003' },
-      ];
+      // Fetch all students from API
+      const allStudents = await fetchAllPaginatedItems(
+        '/midland/admin/students/all',
+        token,
+        getApiUrl,
+        getAuthHeaders
+      );
       
-      setStudents(mockStudents);
+      // Filter students by period's grade and section
+      const filteredStudents = allStudents.filter(student => {
+        const matchesGrade = !period.gradeLevel || String(student.gradeLevel || '').trim() === String(period.gradeLevel).trim();
+        const matchesSection = !period.section || String(student.section || '').trim() === String(period.section).trim();
+        return matchesGrade && matchesSection;
+      });
       
-      // Initialize attendance status
+      // Map to expected format
+      const studentsList = filteredStudents.map(student => ({
+        studentCode: student.studentCode || student.admissionNumber || student.rollNo || student.studentUid || student.schoolEmail || '',
+        name: student.fullName || student.name || `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'Unknown',
+        admissionNumber: student.admissionNumber || student.rollNo || student.studentCode || ''
+      })).filter(s => s.studentCode); // Filter out students without a valid student code
+      
+      setStudents(studentsList);
+      
+      // Initialize attendance status - default all to present
       const initialStatus = {};
-      mockStudents.forEach(s => {
-        initialStatus[s.studentCode] = 'present';
+      studentsList.forEach(s => {
+        if (s.studentCode) {
+          initialStatus[s.studentCode] = 'present';
+        }
       });
       setAttendanceStatus(initialStatus);
     } catch (err) {
-      toast.error('Failed to load students');
+      const errorMsg = err.message || 'Failed to load students';
+      toast.error(errorMsg);
+      setStudents([]);
+      setAttendanceStatus({});
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [token, toast]);
 
 
   // Mark attendance

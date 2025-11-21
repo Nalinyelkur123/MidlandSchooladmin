@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiSearch } from 'react-icons/fi';
 import { FiArrowLeft, FiUser, FiBriefcase, FiMail } from 'react-icons/fi';
@@ -50,17 +51,12 @@ export default function TeacherCreate() {
     async function fetchSchools() {
       setLoadingSchools(true);
       try {
-        const url = getApiUrl('/midland/admin/schools/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load schools');
-        }
-        
-        const data = await res.json();
-        const schoolsData = Array.isArray(data) ? data : [];
+        const schoolsData = await fetchAllPaginatedItems(
+          '/midland/admin/schools/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         if (isMounted) {
           setSchools(schoolsData);

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { SkeletonProfile } from '../../components/SkeletonLoader';
 import { FiEdit2, FiArrowLeft, FiPhone, FiMail, FiHome, FiCalendar, FiTag, FiHash, FiUser, FiBookOpen, FiPhoneCall, FiUsers } from 'react-icons/fi';
 import StatusBadge from '../../components/StatusBadge';
@@ -39,17 +40,12 @@ export default function StudentProfile() {
         }
         
         if (!studentData) {
-          const allUrl = getApiUrl('/midland/admin/students/all');
-          const allRes = await fetch(allUrl, { 
-            headers: getAuthHeaders(token)
-          });
-          
-          if (!allRes.ok) {
-            throw new Error('Failed to load student');
-          }
-          
-          const data = await allRes.json();
-          const list = Array.isArray(data) ? data : [];
+          const list = await fetchAllPaginatedItems(
+            '/midland/admin/students/all',
+            token,
+            getApiUrl,
+            getAuthHeaders
+          );
           
           const match = list.find(s => 
             String(s.studentUid) === id || 

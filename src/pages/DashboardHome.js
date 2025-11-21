@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { FiHome, FiUser, FiUserCheck, FiUsers, FiTrendingUp, FiTrendingDown, FiCalendar, FiBook, FiActivity, FiAward, FiClock, FiLayers, FiRefreshCw } from 'react-icons/fi';
 import { getApiUrl, getAuthHeaders } from '../config';
 import { useAuth } from '../context/AuthContext';
+import { fetchAllPaginatedItems } from '../utils/api';
 import { SkeletonCard } from '../components/SkeletonLoader';
 import { GrowthChart, AttendanceChart, DistributionChart, PerformanceChart } from '../components/Charts';
 import { useNavigate } from 'react-router-dom';
@@ -35,65 +36,45 @@ export default function DashboardHome() {
     if (forceRefresh) {
       setRefreshing(true);
     } else {
-    hasFetchedRef.current = true;
+      hasFetchedRef.current = true;
     }
     setLoading(true);
     try {
+      // Fetch all counts with pagination support
       let studentsCount = 0;
-      try {
-        const url = getApiUrl('/midland/admin/students/all');
-        const res = await fetch(url, {
-          headers: getAuthHeaders(token)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          studentsCount = Array.isArray(data) ? data.length : 0;
-        }
-      } catch (err) {
-        // If API fails, set to 0 instead of fake data
-        studentsCount = 0;
-      }
-
       let teachersCount = 0;
-      try {
-        const url = getApiUrl('/midland/admin/teachers/all');
-        const res = await fetch(url, {
-          headers: getAuthHeaders(token)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          teachersCount = Array.isArray(data) ? data.length : 0;
-        }
-      } catch (err) {
-        teachersCount = 0;
-      }
-
       let adminsCount = 0;
-      try {
-        const url = getApiUrl('/midland/admin/all');
-        const res = await fetch(url, {
-          headers: getAuthHeaders(token)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          adminsCount = Array.isArray(data) ? data.length : 0;
-        }
-      } catch (err) {
-        adminsCount = 0;
-      }
-
       let schoolsCount = 0;
+
       try {
-        const url = getApiUrl('/midland/admin/schools/all');
-        const res = await fetch(url, {
-          headers: getAuthHeaders(token)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          schoolsCount = Array.isArray(data) ? data.length : 0;
-        }
+        const [allStudents, allTeachers, allAdmins, allSchools] = await Promise.all([
+          fetchAllPaginatedItems('/midland/admin/students/all', token, getApiUrl, getAuthHeaders),
+          fetchAllPaginatedItems('/midland/admin/teachers/all', token, getApiUrl, getAuthHeaders),
+          fetchAllPaginatedItems('/midland/admin/all', token, getApiUrl, getAuthHeaders),
+          fetchAllPaginatedItems('/midland/admin/schools/all', token, getApiUrl, getAuthHeaders)
+        ]);
+        
+        studentsCount = allStudents.length;
+        teachersCount = allTeachers.length;
+        adminsCount = allAdmins.length;
+        schoolsCount = allSchools.length;
       } catch (err) {
-        schoolsCount = 0;
+        // If parallel fetch fails, try sequential
+        try {
+          studentsCount = (await fetchAllPaginatedItems('/midland/admin/students/all', token, getApiUrl, getAuthHeaders)).length;
+        } catch (e) { studentsCount = 0; }
+        
+        try {
+          teachersCount = (await fetchAllPaginatedItems('/midland/admin/teachers/all', token, getApiUrl, getAuthHeaders)).length;
+        } catch (e) { teachersCount = 0; }
+        
+        try {
+          adminsCount = (await fetchAllPaginatedItems('/midland/admin/all', token, getApiUrl, getAuthHeaders)).length;
+        } catch (e) { adminsCount = 0; }
+        
+        try {
+          schoolsCount = (await fetchAllPaginatedItems('/midland/admin/schools/all', token, getApiUrl, getAuthHeaders)).length;
+        } catch (e) { schoolsCount = 0; }
       }
 
       setCounts({
@@ -154,6 +135,35 @@ export default function DashboardHome() {
     hasFetchedRef.current = false;
     fetchCounts();
   }, [fetchCounts, token]);
+
+  // Refresh data when page becomes visible (user navigates back from another tab/window)
+  useEffect(() => {
+    let timeoutId = null;
+    
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // Clear any pending refresh
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        // Page became visible, refresh data after a short delay to avoid too frequent refreshes
+        timeoutId = setTimeout(() => {
+          hasFetchedRef.current = false;
+          fetchCounts(true);
+        }, 500);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [fetchCounts]);
 
   const mainCards = [
     { 

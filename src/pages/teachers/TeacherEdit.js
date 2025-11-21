@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiArrowLeft, FiUser, FiBriefcase, FiMail, FiSearch } from 'react-icons/fi';
 import { SkeletonForm } from '../../components/SkeletonLoader';
@@ -26,17 +27,13 @@ export default function TeacherEdit() {
       setLoading(true);
       setError('');
       try {
-        const url = getApiUrl('/midland/admin/teachers/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
+        const list = await fetchAllPaginatedItems(
+          '/midland/admin/teachers/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
-        if (!res.ok) {
-          throw new Error('Failed to load teacher');
-        }
-        
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : [];
         const match = list.find(t => 
           String(t.schoolEmail) === id || 
           String(t.personalEmail) === id ||
@@ -69,17 +66,12 @@ export default function TeacherEdit() {
     async function fetchSchools() {
       setLoadingSchools(true);
       try {
-        const url = getApiUrl('/midland/admin/schools/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load schools');
-        }
-        
-        const data = await res.json();
-        const schoolsData = Array.isArray(data) ? data : [];
+        const schoolsData = await fetchAllPaginatedItems(
+          '/midland/admin/schools/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         if (isMounted) {
           setSchools(schoolsData);
@@ -109,7 +101,7 @@ export default function TeacherEdit() {
     <div className="page">
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
-          <h2>Edit Teacher</h2>
+        <h2>Edit Teacher</h2>
           <div style={{ position: 'relative', flex: '0 0 300px', maxWidth: '300px' }}>
             <FiSearch size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
             <input

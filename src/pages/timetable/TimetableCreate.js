@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl, getAuthHeaders } from '../../config';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { fetchAllPaginatedItems } from '../../utils/api';
 import { useSearch } from '../../context/SearchContext';
 import { FiArrowLeft, FiCalendar, FiSearch } from 'react-icons/fi';
 import {
@@ -41,23 +42,12 @@ export default function TimetableCreate() {
     async function fetchSubjects() {
       setLoadingSubjects(true);
       try {
-        const url = getApiUrl('/midland/users/subjects/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load subjects');
-        }
-        
-        const data = await res.json();
-        // Handle paginated response (content array) or direct array
-        let subjectsData = [];
-        if (data && Array.isArray(data)) {
-          subjectsData = data;
-        } else if (data && Array.isArray(data.content)) {
-          subjectsData = data.content;
-        }
+        const subjectsData = await fetchAllPaginatedItems(
+          '/midland/users/subjects/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         if (isMounted) {
           setSubjects(subjectsData);
@@ -84,17 +74,12 @@ export default function TimetableCreate() {
     async function fetchTeachers() {
       setLoadingTeachers(true);
       try {
-        const url = getApiUrl('/midland/admin/teachers/all');
-        const res = await fetch(url, { 
-          headers: getAuthHeaders(token)
-        });
-        
-        if (!res.ok) {
-          throw new Error('Failed to load teachers');
-        }
-        
-        const data = await res.json();
-        const teachersData = Array.isArray(data) ? data : [];
+        const teachersData = await fetchAllPaginatedItems(
+          '/midland/admin/teachers/all',
+          token,
+          getApiUrl,
+          getAuthHeaders
+        );
         
         if (isMounted) {
           setTeachers(teachersData);
